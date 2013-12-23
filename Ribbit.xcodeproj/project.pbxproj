@@ -46,7 +46,7 @@
 		78BCF1461864BBB200858D22 /* sent.png in Resources */ = {isa = PBXBuildFile; fileRef = 78BCF1431864BBB200858D22 /* sent.png */; };
 		78BCF1471864BBB200858D22 /* unread.png in Resources */ = {isa = PBXBuildFile; fileRef = 78BCF1441864BBB200858D22 /* unread.png */; };
 		78BCF1501864EFBA00858D22 /* GlobalTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 78BCF14F1864EFBA00858D22 /* GlobalTimer.m */; };
-		84A292BB186643EA0032FE29 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A292BA186643EA0032FE29 /* Parse.framework */; };
+		847ABBAA1868E93500446352 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 847ABBA91868E93500446352 /* Parse.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -116,7 +116,7 @@
 		78BCF1441864BBB200858D22 /* unread.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unread.png; sourceTree = "<group>"; };
 		78BCF14E1864EFBA00858D22 /* GlobalTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalTimer.h; sourceTree = "<group>"; };
 		78BCF14F1864EFBA00858D22 /* GlobalTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GlobalTimer.m; sourceTree = "<group>"; };
-		84A292BA186643EA0032FE29 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
+		847ABBA91868E93500446352 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,7 +134,7 @@
 				421B464E182708C00082B789 /* StoreKit.framework in Frameworks */,
 				421B464F182708C00082B789 /* SystemConfiguration.framework in Frameworks */,
 				421B460B1826C8D50082B789 /* CoreGraphics.framework in Frameworks */,
-				84A292BB186643EA0032FE29 /* Parse.framework in Frameworks */,
+				847ABBAA1868E93500446352 /* Parse.framework in Frameworks */,
 				421B463F1827084A0082B789 /* AudioToolbox.framework in Frameworks */,
 				421B460D1826C8D50082B789 /* UIKit.framework in Frameworks */,
 				421B46091826C8D50082B789 /* Foundation.framework in Frameworks */,
@@ -176,7 +176,7 @@
 		421B46071826C8D50082B789 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				84A292BA186643EA0032FE29 /* Parse.framework */,
+				847ABBA91868E93500446352 /* Parse.framework */,
 				42E1254B1828571A00319FD0 /* MediaPlayer.framework */,
 				421B4640182708C00082B789 /* CFNetwork.framework */,
 				421B4641182708C00082B789 /* CoreLocation.framework */,
@@ -515,16 +515,14 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/tordasnes/Development/Ribbit,
-					"/Users/admin/Downloads/Snapchat-clone-master",
-					/Users/admin/Desktop/Dropbox/Dropbox/JustinRib,
-					/Users/jcubero/Dropbox/JustinRib,
-					/Users/admin/Desktop/JustinRib,
+					/Users/admin/Code/JustinRib,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Ribbit/Ribbit-Prefix.pch";
 				INFOPLIST_FILE = "Ribbit/Ribbit-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -536,16 +534,14 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/tordasnes/Development/Ribbit,
-					"/Users/admin/Downloads/Snapchat-clone-master",
-					/Users/admin/Desktop/Dropbox/Dropbox/JustinRib,
-					/Users/jcubero/Dropbox/JustinRib,
-					/Users/admin/Desktop/JustinRib,
+					/Users/admin/Code/JustinRib,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Ribbit/Ribbit-Prefix.pch";
 				INFOPLIST_FILE = "Ribbit/Ribbit-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

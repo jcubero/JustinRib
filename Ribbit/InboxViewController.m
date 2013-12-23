@@ -32,6 +32,9 @@ static NSTimer* refreshTimer;
     
     if (currentUser) {
         NSLog(@"Current user: %@", [currentUser username]);
+        refreshTimer=  [NSTimer scheduledTimerWithTimeInterval:20 target:self selector:@selector(retriveMessages) userInfo:nil repeats:YES];
+        
+        [self retriveMessages];
     } else {
         [self performSegueWithIdentifier:@"showLogin" sender:self];
     }
@@ -39,10 +42,6 @@ static NSTimer* refreshTimer;
     self.refreshControl = [[UIRefreshControl alloc] init];
     
     [self.refreshControl addTarget:self action:@selector(retriveMessages) forControlEvents:UIControlEventValueChanged];
-    
-    refreshTimer=  [NSTimer scheduledTimerWithTimeInterval:20 target:self selector:@selector(retriveMessages) userInfo:nil repeats:YES];
-    
-    [self retriveMessages];
     
 }
 
