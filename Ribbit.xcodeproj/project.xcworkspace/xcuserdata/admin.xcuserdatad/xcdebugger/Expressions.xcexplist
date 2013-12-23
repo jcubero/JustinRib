@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "-[InboxViewController tableView:cellForRowAtIndexPath:]:InboxViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[dateFormat stringFromDate:created]">
+            </PersistentString>
+            <PersistentString
+               value = "cell.detailTextLabel.text">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "__38-[InboxViewController retriveMessages]_block_invoke:InboxViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.messages">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
