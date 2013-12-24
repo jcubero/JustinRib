@@ -3,24 +3,13 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "-[GlobalTimer aTime]:GlobalTimer.m">
-      </ContextState>
-      <ContextState
-         contextName = "-[GlobalTimer startTimer]:GlobalTimer.m">
-      </ContextState>
-      <ContextState
-         contextName = "-[InboxViewController viewWillAppear:]:InboxViewController.m">
+         contextName = "__29-[LoginViewController logIn:]_block_invoke:LoginViewController.m">
          <PersistentStrings>
             <PersistentString
-               value = "[GlobalTimer ribbitTimer].timerValue">
+               value = "username">
             </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "-[InboxViewController tableView:cellForRowAtIndexPath:]:InboxViewController.m">
-         <PersistentStrings>
             <PersistentString
-               value = "[message objectForKey:@&quot;senderId&quot;]">
+               value = "password">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -29,6 +18,39 @@
          <PersistentStrings>
             <PersistentString
                value = "cell.textLabel.tag">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[GlobalTimer startTimer]:GlobalTimer.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[InboxViewController tableView:cellForRowAtIndexPath:]:InboxViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[message objectId]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[InboxViewController retriveMessages]:InboxViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.recivedMessages.count">
+            </PersistentString>
+            <PersistentString
+               value = "self.sentMessages.count">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[GlobalTimer aTime]:GlobalTimer.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[InboxViewController viewWillAppear:]:InboxViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[GlobalTimer ribbitTimer].timerValue">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

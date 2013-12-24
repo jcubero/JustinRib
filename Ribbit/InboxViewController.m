@@ -19,6 +19,7 @@ static UITableViewCell* currentCell;
 static NSString* currentCellText;
 static BOOL isViewing=NO;
 static NSTimer* refreshTimer;
+static NSString* lastObjectId;
 
 @implementation InboxViewController
 
@@ -54,7 +55,7 @@ static NSTimer* refreshTimer;
     NSNumber* localTimerValue =[GlobalTimer ribbitTimer].timerValue;
     currentCell.textLabel.text  = [NSString stringWithFormat:@"%@ - %@",currentCellText, localTimerValue];
     
-    if ([localTimerValue isEqualToNumber:@10]){
+    if (([localTimerValue isEqualToNumber:@10])||([localTimerValue isEqualToNumber:@0])){
         [self.moviePlayer stop];
         [self.moviePlayer.view removeFromSuperview];
         [self.navigationController popViewControllerAnimated:YES];
@@ -84,8 +85,6 @@ static NSTimer* refreshTimer;
     NSNumber* localTimerValue =[GlobalTimer ribbitTimer].timerValue;
     if ((currentCell)&&(isViewing)&&(([localTimerValue isEqualToNumber:@10])||([localTimerValue isEqualToNumber:@0])))
     {
-        
-        
         currentCell.textLabel.text=[NSString stringWithFormat:@"%@",currentCellText];
         currentCell.imageView.image = [UIImage imageNamed:@"read.png"];
         currentCell.textLabel.tag = 1;
@@ -143,8 +142,14 @@ static NSTimer* refreshTimer;
         cell.textLabel.tag = 0;
     }
     
-    if ([[message objectForKey:@"senderId"] isEqualToString: currentUserId]){
+    if (([[message objectForKey:@"senderId"] isEqualToString: currentUserId])&& [lastObjectId isEqualToString:[message objectId]] ){
         cell.imageView.image = [UIImage imageNamed:@"sent.png"];
+        cell.textLabel.tag = 1;
+        lastObjectId=@"";
+    }
+    else
+    {
+        lastObjectId=[message objectId];
     }
     
     
@@ -236,30 +241,56 @@ static NSTimer* refreshTimer;
 - (void)retriveMessages
 {
     if (!isViewing){
-        PFQuery *myMessages = [PFQuery queryWithClassName:@"Messages"];
-        [myMessages whereKey:@"recipientsIds" equalTo:[[PFUser currentUser] objectId]];
-    
-        PFQuery *mySentMessages = [PFQuery queryWithClassName:@"Messages"];
-        [mySentMessages whereKey:@"senderId" equalTo:[[PFUser currentUser] objectId]];
+        NSMutableSet* unionArray = [[NSMutableSet alloc]init];
+        NSArray* sortedArray;
+        
     
    
-        PFQuery *query = [PFQuery orQueryWithSubqueries:@[myMessages,mySentMessages]];
-        [query orderByDescending:@"createdAt"];
-        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        PFQuery *mySentMessages = [PFQuery queryWithClassName:@"Messages"];
+        [mySentMessages whereKey:@"senderId" equalTo:[[PFUser currentUser] objectId]];
+        [mySentMessages orderByDescending:@"createdAt"];
+        [mySentMessages findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             if (error) {
                 NSLog(@"Error: %@ %@", error, error.userInfo);
             } else {
                 // Found messages!
-                self.messages = objects;
-                [self.tableView reloadData];
-                NSLog(@"Retrived %lu messages", (unsigned long)self.messages.count);
+                self.sentMessages = objects;
             }
-        
-            if ([self.refreshControl isRefreshing]) {
-                [self.refreshControl endRefreshing];
-            }
-        
         }];
+        
+        
+        PFQuery *myMessages = [PFQuery queryWithClassName:@"Messages"];
+        [myMessages whereKey:@"recipientsIds" equalTo:[[PFUser currentUser] objectId]];
+
+        [myMessages orderByDescending:@"createdAt"];
+        [myMessages findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            if (error) {
+                NSLog(@"Error: %@ %@", error, error.userInfo);
+            } else {
+                // Found messages!
+                self.recivedMessages = objects;
+            }
+        }];
+        
+        
+        [unionArray unionSet:[NSSet setWithArray:self.sentMessages]];
+        
+        [unionArray unionSet:[NSSet setWithArray:self.recivedMessages]];
+        
+        sortedArray = [unionArray allObjects];
+        
+        NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES]; //Just write the key for which you want to have sorting & whole array would be sorted.
+        [sortedArray sortedArrayUsingDescriptors:[NSArray arrayWithObjects:descriptor,nil]];
+        
+        self.messages =sortedArray;
+        [self.tableView reloadData];
+        NSLog(@"Retrived %lu messages", (unsigned long)self.messages.count);
+    
+    
+        if ([self.refreshControl isRefreshing]) {
+            [self.refreshControl endRefreshing];
+        }
+
     }
 }
 
