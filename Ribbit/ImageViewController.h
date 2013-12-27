@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface ImageViewController : UIViewController
 
@@ -16,5 +17,9 @@
 
 
 @property (strong, nonatomic) IBOutlet UILabel *timerLbl;
+
+@property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
+
+@property (strong, nonatomic) IBOutlet UIView *contentView;
 
 @end

@@ -19,7 +19,6 @@ static UITableViewCell* currentCell;
 static NSString* currentCellText;
 static BOOL isViewing=NO;
 static NSTimer* refreshTimer;
-static NSString* lastObjectId;
 
 @implementation InboxViewController
 
@@ -27,7 +26,7 @@ static NSString* lastObjectId;
 {
     [super viewDidLoad];
     
-    self.moviePlayer = [[MPMoviePlayerController alloc] init];
+    
     
     PFUser *currentUser = [PFUser currentUser];
     
@@ -55,12 +54,7 @@ static NSString* lastObjectId;
     NSNumber* localTimerValue =[GlobalTimer ribbitTimer].timerValue;
     currentCell.textLabel.text  = [NSString stringWithFormat:@"%@ - %@",currentCellText, localTimerValue];
     
-    if (([localTimerValue isEqualToNumber:@10])||([localTimerValue isEqualToNumber:@0])){
-        [self.moviePlayer stop];
-        [self.moviePlayer.view removeFromSuperview];
-        [self.navigationController popViewControllerAnimated:YES];
-        
-        
+    if ([localTimerValue integerValue]  <= 0){
         currentCell.textLabel.text=[NSString stringWithFormat:@"%@",currentCellText];
         currentCell.imageView.image = [UIImage imageNamed:@"read.png"];
         currentCell.textLabel.tag = 1;
@@ -83,7 +77,7 @@ static NSString* lastObjectId;
     [[GlobalTimer ribbitTimer] addObserver:self forKeyPath:@"timerValue" options:NSKeyValueObservingOptionNew context:NULL];
     
     NSNumber* localTimerValue =[GlobalTimer ribbitTimer].timerValue;
-    if ((currentCell)&&(isViewing)&&(([localTimerValue isEqualToNumber:@10])||([localTimerValue isEqualToNumber:@0])))
+    if ((currentCell)&&(isViewing)&&([localTimerValue integerValue]  <= 0))
     {
         currentCell.textLabel.text=[NSString stringWithFormat:@"%@",currentCellText];
         currentCell.imageView.image = [UIImage imageNamed:@"read.png"];
@@ -142,15 +136,11 @@ static NSString* lastObjectId;
         cell.textLabel.tag = 0;
     }
     
-    if (([[message objectForKey:@"senderId"] isEqualToString: currentUserId])&& [lastObjectId isEqualToString:[message objectId]] ){
+    if ([[message objectForKey:@"senderId"] isEqualToString: currentUserId]){
         cell.imageView.image = [UIImage imageNamed:@"sent.png"];
         cell.textLabel.tag = 1;
-        lastObjectId=@"";
     }
-    else
-    {
-        lastObjectId=[message objectId];
-    }
+   
     
     
     UIColor *color = [UIColor colorWithRed:0.553 green:0.439 blue:0.718 alpha:1.0];
@@ -165,21 +155,10 @@ static NSString* lastObjectId;
     if (([cell isEqual:currentCell]) && (isViewing)){
         
         self.selectedMessage = [self.messages objectAtIndex:indexPath.row];
-            
-        NSString *fileType = [self.selectedMessage objectForKey:@"fileType"];
-        if ([fileType isEqualToString:@"image"]) {
-            [self performSegueWithIdentifier:@"showImage" sender:self];
-        } else {
-            PFFile *videoFile = [self.selectedMessage objectForKey:@"file"];
-            NSURL *fileUrl = [NSURL URLWithString:videoFile.url];
-            self.moviePlayer.contentURL = fileUrl;
-            [self.moviePlayer prepareToPlay];
-                
-            // Add it to the viewController
-            [self.view addSubview:self.moviePlayer.view];
-            [self.moviePlayer setFullscreen:YES animated:YES];
-        }
         
+        [self performSegueWithIdentifier:@"showImage" sender:self];
+            
+                
     }
     else if ((![cell isEqual:currentCell]) && (!isViewing)){
         if (cell.textLabel.tag==0){
@@ -187,20 +166,8 @@ static NSString* lastObjectId;
             currentCellText = cell.textLabel.text;
             isViewing = YES;
             self.selectedMessage = [self.messages objectAtIndex:indexPath.row];
+            [self performSegueWithIdentifier:@"showImage" sender:self];
             
-            NSString *fileType = [self.selectedMessage objectForKey:@"fileType"];
-            if ([fileType isEqualToString:@"image"]) {
-                [self performSegueWithIdentifier:@"showImage" sender:self];
-            } else {
-                PFFile *videoFile = [self.selectedMessage objectForKey:@"file"];
-                NSURL *fileUrl = [NSURL URLWithString:videoFile.url];
-                self.moviePlayer.contentURL = fileUrl;
-                [self.moviePlayer prepareToPlay];
-                
-                // Add it to the viewController
-                [self.view addSubview:self.moviePlayer.view];
-                [self.moviePlayer setFullscreen:YES animated:YES];
-            }
             
             NSMutableArray *viewedIds = [NSMutableArray arrayWithArray:[self.selectedMessage objectForKey:@"viewedIds"]];
             NSLog(@"viewedIds: %@", viewedIds);
@@ -241,11 +208,6 @@ static NSString* lastObjectId;
 - (void)retriveMessages
 {
     if (!isViewing){
-        NSMutableSet* unionArray = [[NSMutableSet alloc]init];
-        NSArray* sortedArray;
-        
-    
-   
         PFQuery *mySentMessages = [PFQuery queryWithClassName:@"Messages"];
         [mySentMessages whereKey:@"senderId" equalTo:[[PFUser currentUser] objectId]];
         [mySentMessages orderByDescending:@"createdAt"];
@@ -255,6 +217,7 @@ static NSString* lastObjectId;
             } else {
                 // Found messages!
                 self.sentMessages = objects;
+                [self mergeSendRecivedMessage];
             }
         }];
         
@@ -268,30 +231,44 @@ static NSString* lastObjectId;
                 NSLog(@"Error: %@ %@", error, error.userInfo);
             } else {
                 // Found messages!
+                PFObject *message;
+                int i;
+                for (i=0; i<[objects count]; i++) {
+                    message =[objects objectAtIndex:i];
+                    [message setValue:@"" forKey:@"senderId"];
+                }
+                
                 self.recivedMessages = objects;
+                [self mergeSendRecivedMessage];
             }
         }];
-        
-        
-        [unionArray unionSet:[NSSet setWithArray:self.sentMessages]];
-        
-        [unionArray unionSet:[NSSet setWithArray:self.recivedMessages]];
-        
-        sortedArray = [unionArray allObjects];
-        
-        NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES]; //Just write the key for which you want to have sorting & whole array would be sorted.
-        [sortedArray sortedArrayUsingDescriptors:[NSArray arrayWithObjects:descriptor,nil]];
-        
-        self.messages =sortedArray;
-        [self.tableView reloadData];
-        NSLog(@"Retrived %lu messages", (unsigned long)self.messages.count);
-    
-    
-        if ([self.refreshControl isRefreshing]) {
-            [self.refreshControl endRefreshing];
-        }
-
     }
+}
+
+-(void)mergeSendRecivedMessage
+{
+    NSMutableSet* unionArray = [[NSMutableSet alloc]init];
+    NSArray* sortedArray;
+
+    
+    [unionArray unionSet:[NSSet setWithArray:self.sentMessages]];
+    
+    [unionArray unionSet:[NSSet setWithArray:self.recivedMessages]];
+    
+    sortedArray = [unionArray allObjects];
+    
+    NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES]; //Just write the key for which you want to have sorting & whole array would be sorted.
+    [sortedArray sortedArrayUsingDescriptors:[NSArray arrayWithObjects:descriptor,nil]];
+    
+    self.messages =sortedArray;
+    [self.tableView reloadData];
+    NSLog(@"Retrived %lu messages", (unsigned long)self.messages.count);
+    
+    
+    if ([self.refreshControl isRefreshing]) {
+        [self.refreshControl endRefreshing];
+    }
+
 }
 
 

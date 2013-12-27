@@ -10,6 +10,7 @@
 
 static NSNumber* localTimerValue;
 
+
 @implementation GlobalTimer
 +(GlobalTimer*) ribbitTimer{
     static GlobalTimer* ribbitTimer=nil;
@@ -25,8 +26,11 @@ static NSNumber* localTimerValue;
 -(void)startTimer
 {
     if (!self.timer){
+        localTimerValue=[NSNumber numberWithInteger:10];
+        self.timerValue = [NSNumber numberWithInteger:10];
         self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(aTime) userInfo:nil repeats:YES];
     }
+    self.isRunning = YES;
 }
 
 -(void)stopTimer
@@ -36,19 +40,17 @@ static NSNumber* localTimerValue;
         self.timer = nil;
     }
     
-    localTimerValue=0;
-    self.timerValue = [NSNumber numberWithInt:0];
+   
+    self.isRunning = NO;
 }
 
 -(void)aTime
 {
-    
-    
         NSInteger temp = [localTimerValue integerValue];
-        temp ++;
+        temp --;
         localTimerValue= [NSNumber numberWithInteger:temp];
     
-    if (![localTimerValue isEqualToNumber:@11.0])
+    if ([localTimerValue integerValue]  >= 0)
     {
         self.timerValue = [NSNumber numberWithInteger:temp];
     }

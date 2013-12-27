@@ -11,6 +11,7 @@
 @interface GlobalTimer : NSObject
     @property (nonatomic,retain) NSNumber *timerValue;
     @property (nonatomic,strong)NSTimer *timer ;
+    @property  BOOL isRunning;
 
     +(GlobalTimer*) ribbitTimer;
 

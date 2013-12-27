@@ -157,6 +157,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="iQ4-RR-wo3"/>
                     <connections>
+                        <outlet property="contentView" destination="ExJ-jS-3xM" id="HCc-89-MNC"/>
                         <outlet property="imageView" destination="wGT-5p-EgA" id="pbT-Xv-0KK"/>
                         <outlet property="timerLbl" destination="xbs-de-rVp" id="foa-eT-p5w"/>
                     </connections>
