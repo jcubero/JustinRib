@@ -48,6 +48,7 @@
 		78BCF1461864BBB200858D22 /* sent.png in Resources */ = {isa = PBXBuildFile; fileRef = 78BCF1431864BBB200858D22 /* sent.png */; };
 		78BCF1471864BBB200858D22 /* unread.png in Resources */ = {isa = PBXBuildFile; fileRef = 78BCF1441864BBB200858D22 /* unread.png */; };
 		78BCF1501864EFBA00858D22 /* GlobalTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 78BCF14F1864EFBA00858D22 /* GlobalTimer.m */; };
+		78CD29991876195400530B79 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 78CD29981876195400530B79 /* Default-568h@2x.png */; };
 		78DD72851868F054006D9FC9 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78DD72841868F054006D9FC9 /* Parse.framework */; };
 /* End PBXBuildFile section */
 
@@ -120,6 +121,7 @@
 		78BCF1441864BBB200858D22 /* unread.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unread.png; sourceTree = "<group>"; };
 		78BCF14E1864EFBA00858D22 /* GlobalTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalTimer.h; sourceTree = "<group>"; };
 		78BCF14F1864EFBA00858D22 /* GlobalTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GlobalTimer.m; sourceTree = "<group>"; };
+		78CD29981876195400530B79 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		78DD72841868F054006D9FC9 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -161,6 +163,7 @@
 		421B45FC1826C8D50082B789 = {
 			isa = PBXGroup;
 			children = (
+				78CD29981876195400530B79 /* Default-568h@2x.png */,
 				421B460E1826C8D50082B789 /* Ribbit */,
 				421B46271826C8D50082B789 /* RibbitTests */,
 				421B46071826C8D50082B789 /* Frameworks */,
@@ -364,6 +367,7 @@
 			files = (
 				788A46951875C9BD00B7DCD5 /* unreadfilm.png in Resources */,
 				78BCF1471864BBB200858D22 /* unread.png in Resources */,
+				78CD29991876195400530B79 /* Default-568h@2x.png in Resources */,
 				421B46381826C9070082B789 /* MainStoryboard.storyboard in Resources */,
 				78BCF1461864BBB200858D22 /* sent.png in Resources */,
 				421B46131826C8D50082B789 /* InfoPlist.strings in Resources */,

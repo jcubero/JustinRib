@@ -20,6 +20,7 @@ static NSString* currentCellText;
 static BOOL isViewing=NO;
 static NSTimer* refreshTimer;
 
+
 @implementation InboxViewController
 
 - (void)viewDidLoad
@@ -45,6 +46,61 @@ static NSTimer* refreshTimer;
     
     [self.refreshControl addTarget:self action:@selector(retriveMessages) forControlEvents:UIControlEventValueChanged];
     
+    UILongPressGestureRecognizer* longPressGestureRec =
+    [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGesture:)];
+    longPressGestureRec.minimumPressDuration = 1.5;
+    [self.view addGestureRecognizer:longPressGestureRec];
+}
+
+-(void) longPressGesture:(UIGestureRecognizer*)gesture{
+    NSLog(@"Long Press");
+    
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        
+        CGPoint p = [gesture locationInView:self.tableNotifications];
+        
+        NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:p];
+        if (indexPath == nil) {
+            NSLog(@"long press on table view but not on a row");
+        } else {
+            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+            if (cell.isHighlighted) {
+                
+                if (([cell isEqual:currentCell]) && (isViewing)){
+                    
+                    self.selectedMessage = [self.messages objectAtIndex:indexPath.row];
+                    
+                    [self performSegueWithIdentifier:@"showImage" sender:self];
+                    
+                    
+                }
+                else if ((![cell isEqual:currentCell]) && (!isViewing)){
+                    if (cell.textLabel.tag==0){
+                        currentCell = cell;
+                        currentCellText = cell.textLabel.text;
+                        isViewing = YES;
+                        self.selectedMessage = [self.messages objectAtIndex:indexPath.row];
+                        [self performSegueWithIdentifier:@"showImage" sender:self];
+                        
+                        
+                        NSMutableArray *viewedIds = [NSMutableArray arrayWithArray:[self.selectedMessage objectForKey:@"viewedIds"]];
+                        NSLog(@"viewedIds: %@", viewedIds);
+                        
+                        
+                        [viewedIds addObject:[[PFUser currentUser] objectId]];
+                        [self.selectedMessage setObject:viewedIds forKey:@"viewedIds"];
+                        [self.selectedMessage saveInBackground];
+                        
+                        GlobalTimer* ribbitTimer = [GlobalTimer ribbitTimer];
+                        
+                        [ribbitTimer startTimer];
+                    }
+                }
+            }
+        }
+    }
+   
+    
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
@@ -58,7 +114,14 @@ static NSTimer* refreshTimer;
     
     if ([localTimerValue integerValue]  <= 0){
         currentCell.textLabel.text=[NSString stringWithFormat:@"%@",currentCellText];
-        currentCell.imageView.image = [UIImage imageNamed:@"read.png"];
+        if ([[self.selectedMessage objectForKey:@"fileType"] isEqualToString:@"image"])
+        {
+            currentCell.imageView.image = [UIImage imageNamed:@"read.png"];
+        }
+        else
+        {
+            currentCell.imageView.image = [UIImage imageNamed:@"readfilm.png"];
+        }
         currentCell.textLabel.tag = 1;
         isViewing = NO;
     }
@@ -82,7 +145,17 @@ static NSTimer* refreshTimer;
     if ((currentCell)&&(isViewing)&&([localTimerValue integerValue]  <= 0))
     {
         currentCell.textLabel.text=[NSString stringWithFormat:@"%@",currentCellText];
-        currentCell.imageView.image = [UIImage imageNamed:@"read.png"];
+       
+        
+        if ([[self.selectedMessage objectForKey:@"fileType"] isEqualToString:@"image"])
+            {
+                currentCell.imageView.image = [UIImage imageNamed:@"read.png"];
+            }
+            else
+            {
+                 currentCell.imageView.image = [UIImage imageNamed:@"readfilm.png"];
+            }
+            
         currentCell.textLabel.tag = 1;
         isViewing = NO;
     }
@@ -158,17 +231,16 @@ static NSTimer* refreshTimer;
         cell.textLabel.tag = 1;
     }
    
-    
-    
     UIColor *color = [UIColor colorWithRed:0.553 green:0.439 blue:0.718 alpha:1.0];
     cell.accessoryView = [MSCellAccessory accessoryWithType:FLAT_DISCLOSURE_INDICATOR color:color];
+  
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+   /* UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if (([cell isEqual:currentCell]) && (isViewing)){
         
         self.selectedMessage = [self.messages objectAtIndex:indexPath.row];
@@ -198,7 +270,7 @@ static NSTimer* refreshTimer;
             
             [ribbitTimer startTimer];
         }
-    }
+    }*/
 }
 
 

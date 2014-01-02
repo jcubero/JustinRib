@@ -21,4 +21,6 @@
 
 - (IBAction)logOut:(id)sender;
 
+@property (strong, nonatomic) IBOutlet UITableView *tableNotifications;
+
 @end

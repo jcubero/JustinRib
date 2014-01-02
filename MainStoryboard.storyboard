@@ -197,6 +197,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="tableNotifications" destination="ANy-bk-NQd" id="YqT-Yn-Ov3"/>
                         <segue destination="VoY-Go-nj8" kind="push" identifier="showLogin" id="sqk-yH-m5f"/>
                         <segue destination="xac-tL-ZfQ" kind="push" identifier="showImage" id="O6c-D5-tcK"/>
                     </connections>

@@ -20,6 +20,12 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
+    UITapGestureRecognizer* tapRecognizer =
+    [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchesEnded:)];
+    
+    [self.view addGestureRecognizer:tapRecognizer];
+
+    
     NSString *fileType = [self.message objectForKey:@"fileType"];
     if ([fileType isEqualToString:@"image"]) {
         self.imageView.hidden = NO;
@@ -41,6 +47,11 @@
         
         [self.view addSubview:self.movieViewPlayer.view];
     }
+}
+
+-(void) touchesEnded:(UIGestureRecognizer*)gesture
+{
+    NSLog(@"touchesEnded");
 }
 
 -(void)playerPlaybackDidFinish:(NSString *)keyPath
