@@ -22,38 +22,40 @@
     
     NSString *fileType = [self.message objectForKey:@"fileType"];
     if ([fileType isEqualToString:@"image"]) {
+        self.imageView.hidden = NO;
         PFFile *imageFile = [self.message objectForKey:@"file"];
         NSURL *imageFileUrl = [[NSURL alloc] initWithString:imageFile.url];
         NSData *imageData = [NSData dataWithContentsOfURL:imageFileUrl];
         self.imageView.image = [UIImage imageWithData:imageData];
-        
     } else {
-        self.moviePlayer = [[MPMoviePlayerController alloc] init];
         PFFile *videoFile = [self.message objectForKey:@"file"];
         NSURL *fileUrl = [NSURL URLWithString:videoFile.url];
-        self.moviePlayer.contentURL = fileUrl;
-        [self.moviePlayer prepareToPlay];
         
-        // Add it to the viewController
-        [self.view addSubview:self.moviePlayer.view];
-        [self.moviePlayer setFullscreen:YES animated:YES];
+        self.movieViewPlayer = [[MPMoviePlayerViewController alloc] initWithContentURL:fileUrl];
+        
+        [self.movieViewPlayer.view setFrame:self.contentView.frame];
+        self.movieViewPlayer.moviePlayer.scalingMode = MPMovieScalingModeAspectFit;
+        
+        
+        [self.movieViewPlayer.moviePlayer play];
+        
+        [self.view addSubview:self.movieViewPlayer.view];
     }
+}
 
-    
-   /* NSDate *created = [self.message createdAt];
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"EEE, MMM d, h:mm a"];
-
-    NSString *title = [NSString stringWithFormat:@"%@", [dateFormat stringFromDate:created]];
-    self.navigationItem.title  = title;*/
+-(void)playerPlaybackDidFinish:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     
     [[GlobalTimer ribbitTimer] removeObserver:self forKeyPath:@"timerValue" ];
-    [self.moviePlayer stop];
-    [self.moviePlayer.view removeFromSuperview];
+    [self.movieViewPlayer.moviePlayer stop];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

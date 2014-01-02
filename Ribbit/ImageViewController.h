@@ -18,7 +18,7 @@
 
 @property (strong, nonatomic) IBOutlet UILabel *timerLbl;
 
-@property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
+@property (nonatomic, strong) MPMoviePlayerViewController *movieViewPlayer;
 
 @property (strong, nonatomic) IBOutlet UIView *contentView;
 

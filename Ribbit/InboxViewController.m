@@ -26,6 +26,8 @@ static NSTimer* refreshTimer;
 {
     [super viewDidLoad];
     
+    self.sentComplete = NO;
+    self.recivedComplete = NO;
     
     
     PFUser *currentUser = [PFUser currentUser];
@@ -126,14 +128,29 @@ static NSTimer* refreshTimer;
         }
     }
     
-    if (wasRead) {
-        cell.imageView.image = [UIImage imageNamed:@"read.png"];
-        cell.textLabel.tag = 1;
+    NSString *fileType = [message objectForKey:@"fileType"];
+    
+    if ([fileType isEqualToString:@"image"]) {
+        if (wasRead) {
+            cell.imageView.image = [UIImage imageNamed:@"read.png"];
+            cell.textLabel.tag = 1;
+        }
+        else
+        {
+            cell.imageView.image = [UIImage imageNamed:@"unread.png"];
+            cell.textLabel.tag = 0;
+        }
     }
-    else
-    {
-        cell.imageView.image = [UIImage imageNamed:@"unread.png"];
-        cell.textLabel.tag = 0;
+    else{
+        if (wasRead) {
+            cell.imageView.image = [UIImage imageNamed:@"readfilm.png"];
+            cell.textLabel.tag = 1;
+        }
+        else
+        {
+            cell.imageView.image = [UIImage imageNamed:@"unreadfilm.png"];
+            cell.textLabel.tag = 0;
+        }
     }
     
     if ([[message objectForKey:@"senderId"] isEqualToString: currentUserId]){
@@ -216,6 +233,7 @@ static NSTimer* refreshTimer;
                 NSLog(@"Error: %@ %@", error, error.userInfo);
             } else {
                 // Found messages!
+                self.sentComplete= YES;
                 self.sentMessages = objects;
                 [self mergeSendRecivedMessage];
             }
@@ -237,7 +255,7 @@ static NSTimer* refreshTimer;
                     message =[objects objectAtIndex:i];
                     [message setValue:@"" forKey:@"senderId"];
                 }
-                
+                self.recivedComplete = YES;
                 self.recivedMessages = objects;
                 [self mergeSendRecivedMessage];
             }
@@ -247,26 +265,31 @@ static NSTimer* refreshTimer;
 
 -(void)mergeSendRecivedMessage
 {
-    NSMutableSet* unionArray = [[NSMutableSet alloc]init];
-    NSArray* sortedArray;
+    if ((self.sentComplete) && (self.recivedComplete)){
+        NSMutableSet* unionArray = [[NSMutableSet alloc]init];
+        NSArray* sortedArray;
+        NSArray* allNotifications;
 
     
-    [unionArray unionSet:[NSSet setWithArray:self.sentMessages]];
+        [unionArray unionSet:[NSSet setWithArray:self.sentMessages]];
     
-    [unionArray unionSet:[NSSet setWithArray:self.recivedMessages]];
+        [unionArray unionSet:[NSSet setWithArray:self.recivedMessages]];
     
-    sortedArray = [unionArray allObjects];
+        allNotifications = [unionArray allObjects];
+        
+        NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO]; //Just write the key for which you
+        NSArray * descriptors = [NSArray arrayWithObject:descriptor];
+        sortedArray = [allNotifications sortedArrayUsingDescriptors:descriptors];
+        
     
-    NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES]; //Just write the key for which you want to have sorting & whole array would be sorted.
-    [sortedArray sortedArrayUsingDescriptors:[NSArray arrayWithObjects:descriptor,nil]];
-    
-    self.messages =sortedArray;
-    [self.tableView reloadData];
-    NSLog(@"Retrived %lu messages", (unsigned long)self.messages.count);
+        self.messages =sortedArray;
+        [self.tableView reloadData];
+        NSLog(@"Retrived %lu messages", (unsigned long)self.messages.count);
     
     
-    if ([self.refreshControl isRefreshing]) {
-        [self.refreshControl endRefreshing];
+        if ([self.refreshControl isRefreshing]) {
+            [self.refreshControl endRefreshing];
+        }
     }
 
 }

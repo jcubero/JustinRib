@@ -14,6 +14,8 @@
 @property (nonatomic, strong) NSArray *messages;
 @property (nonatomic, strong) NSArray *sentMessages;
 @property (nonatomic, strong) NSArray *recivedMessages;
+@property BOOL sentComplete;
+@property BOOL recivedComplete;
 @property (nonatomic, strong) PFObject *selectedMessage;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 
